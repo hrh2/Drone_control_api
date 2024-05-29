@@ -44,7 +44,7 @@ app.get('/command', (req, res) => {
   const { drone_id } = req.query;
   res.send(commands[drone_id] || '');
 });
-
-server.listen(4001, () => {
-  console.log('Server is running on port http://localhost:4000');
+const port = process.env.PORT || 5000;
+server.listen(port, () => {
+  console.log(`Server is running on port http://localhost:${port}`);
 });
