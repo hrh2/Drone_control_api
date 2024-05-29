@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drone Control Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div class="container mx-auto p-6">
+    <div class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Automatically Launched Drones</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-lg shadow-md">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 bg-gray-200">Drone ID</th>
+              <th class="px-4 py-2 bg-gray-200">Destination</th>
+              <th class="px-4 py-2 bg-gray-200">Latitude</th>
+              <th class="px-4 py-2 bg-gray-200">Longitude</th>
+            </tr>
+          </thead>
+          <tbody id="launchedDrones">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-2xl font-semibold mb-4">Control Drone</h2>
+      <form id="controlForm" class="bg-white p-6 rounded-lg shadow-md">
+        <div class="mb-4">
+          <label for="droneId" class="block text-gray-700 font-bold mb-2">Drone ID:</label>
+          <input type="text" id="droneId" name="droneId" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        </div>
+        <div class="mb-4">
+          <label for="command" class="block text-gray-700 font-bold mb-2">Command:</label>
+          <input type="text" id="command" name="command" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Send Command</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Listen for admin notifications
+    socket.on('adminNotification', (data) => {
+      const launchedDrones = document.getElementById('launchedDrones');
+      const row = document.createElement('tr');
+      row.innerHTML = `<td class="border px-4 py-2">${data.drone_id}</td><td class="border px-4 py-2">${data.district.name}</td><td class="border px-4 py-2">${data.district.latitude}</td><td class="border px-4 py-2">${data.district.longitude}</td>`;
+      launchedDrones.appendChild(row);
+    });
+
+    // Handle control form submission
+    document.getElementById('controlForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const droneId = document.getElementById('droneId').value;
+      const command = document.getElementById('command').value;
+      socket.emit('sendCommand', { drone_id: droneId, command: command });
+    });
+  </script>
+</body>
+</html>
