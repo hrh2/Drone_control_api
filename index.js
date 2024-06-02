@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
+const { log } = require('console');
 
 const app = express();
 const server = http.createServer(app);
@@ -35,6 +36,7 @@ io.on('connection',async (socket) => {
   
   socket.on('image', async(img) => {
     await images.push(img);
+    console.log(img);
     io.emit('new_image',img)
   });
   
