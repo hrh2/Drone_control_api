@@ -19,13 +19,13 @@ let launchedDrones = []; // Store launched drones
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
-  console.log('New client connected');
+  // console.log('New client connected');
 
   // Send the list of launched drones to the new client
   socket.emit('adminNotification', launchedDrones);
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected');
+    // console.log('Client disconnected');
   });
   
   socket.on('message', (message) => {
@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
     const { drone_id, district } = data;
     const newDrone = { drone_id, district };
     launchedDrones.push(newDrone);
-    console.log(`Drone ${drone_id} is launched automatically to ${district.name}`);
+    // console.log(`Drone ${drone_id} is launched automatically to ${district.name}`);
     io.emit('adminNotification', newDrone);
   });
 
@@ -64,5 +64,5 @@ app.get('/command', (req, res) => {
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => {
-  console.log(`Server is running on port http://localhost:${port}`);
+  // console.log(`Server is running on port http://localhost:${port}`);
 });
