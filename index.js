@@ -31,6 +31,10 @@ io.on('connection', (socket) => {
   socket.on('message', (message) => {
     io.emit('new_message',message)
   });
+  
+  socket.on('clear_launched_drones', () => {
+    io.emit('message_clear',"HISTORIES CLEARED")
+  });
 
   socket.on('sendCommand', (data) => {
     const { drone_id, command } = data;
@@ -49,7 +53,7 @@ io.on('connection', (socket) => {
 
   socket.on('register', (drone_id) => {
     socket.join(drone_id);
-    console.log(`Drone ${drone_id} registered`);
+    // console.log(`Drone ${drone_id} registered`);
   });
 });
 
