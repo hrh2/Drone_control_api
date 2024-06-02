@@ -15,21 +15,27 @@ const io = socketIo(server, {
 
 let commands = {}; // Store commands for each drone
 let launchedDrones = []; // Store launched drones
+let images = []
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-io.on('connection', (socket) => {
+io.on('connection',async (socket) => {
   // console.log('New client connected');
 
   // Send the list of launched drones to the new client
   socket.emit('adminNotification', launchedDrones);
-
+  socket.emit('result_image',images)
   socket.on('disconnect', () => {
     // console.log('Client disconnected');
   });
   
   socket.on('message', (message) => {
     io.emit('new_message',message)
+  });
+  
+  socket.on('image', async(img) => {
+    await images.push(img);
+    io.emit('new_image',img)
   });
   
   socket.on('clear_launched_drones', () => {
